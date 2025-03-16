@@ -4,7 +4,10 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
+    <>
     <Button>Click me</Button>
+    <div className="bg-black">Hello world</div>
+    </>
  
   );
 }
