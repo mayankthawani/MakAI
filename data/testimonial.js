@@ -23,4 +23,12 @@ export const testimonial = [
       role: "Marketing Director",
       company: "Global Corp",
     },
+    {
+        quote:
+          "The AI-powered interview prep was a game-changer.  Got more interviews in two weeks,i Lovee this!!!!!",
+        author: "Mayank Thawani",
+        image: "https://randomuser.me/api/portraits/men/79.jpg",
+        role: "Web Developer",
+        company: "Amazon",
+      },
   ];

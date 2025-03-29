@@ -10,7 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-const Header = () => {
+import { checkuser } from '@/lib/checkuser';
+const Header = async  () => {
+  await checkuser();
   return (
     <div>
       <header className="fixed top-0 left-0 w-full border-b bg-background/90 backdrop-blur-lg z-50 supports-[backdrop-filter]:bg-background/60">
