@@ -11,6 +11,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({ children }) {
           {/* header */}
           <Header />
          <main className="min-h-screen"> {children} </main>{/* 🚀 Removed unnecessary `{}` */}
+         <Toaster richColors />
           {/* footer */}
           <footer className="bg-muted/50 py-12">
             <div className="container mx-auto text-center px-4">
