@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { onboardingSchema } from "@/app/lib/schema";
@@ -16,21 +16,55 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import useFetch from "@/hooks/use-fetch";
+import { updateUser } from "@/actions/user";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const OnBoardingForm = ({ industries }) => {
     const [selectedIndustry, setSelectedIndustry] = useState(null);
     const router = useRouter();
+    const { loading: updateloading, fn: updateuserfn, data: updateresult } = useFetch(updateUser);
 
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
         resolver: zodResolver(onboardingSchema),
     });
 
-    const watchIndustry = watch("industry"); // ✅ Corrected
+    const watchIndustry = watch("industry");
 
-    const onSubmit = (data) => {
+    // ✅ Moved useEffect outside onSubmit to follow React Hook rules
+    useEffect(() => {
+        if (updateresult?.success && !updateloading) {
+            toast.success("Profile Completed Successfully!");
+            router.push("/dashboard");
+            router.refresh();
+        }
+    }, [updateresult, updateloading]);
+
+    const onSubmit = async (data) => {
         console.log("Form submitted:", data);
-        // Handle submission logic
+        try {
+            let formattedIndustry = data.industry;
+            
+            // Ensure subIndustry is valid before formatting
+            if (data.subIndustry) {
+                formattedIndustry = `${data.industry}-${data.subIndustry.toLowerCase().replace(/ /g, "-")}`;
+            }
+    
+            await updateuserfn({
+                ...data,
+                industry: formattedIndustry
+            });
+    
+            // Show a success toast
+            toast.success("Profile Completed Successfully!");
+    
+        } catch (error) {
+            console.error("Onboarding error:", error);
+            toast.error("Failed to complete profile. Please try again.");
+        }
     };
+    ;
 
     return (
         <div className="flex items-center justify-center bg-background">
@@ -88,50 +122,59 @@ const OnBoardingForm = ({ industries }) => {
                             </div>
                         )}
 
+                        {/* Experience Field */}
                         <div>
-                            <Label htmlFor="experience">Industry</Label>
-
-                            <input type="number" id="experience" max={50} min={0}  className="w-full border rounded-md p-2 focus:outline-none  " placeholder="Enter years of experience" {...register("experience")} />
-
-
+                            <Label htmlFor="experience">Experience (Years)</Label>
+                            <input type="number" id="experience" max={50} min={0}  
+                                className="w-full border rounded-md p-2 focus:outline-none" 
+                                placeholder="Enter years of experience" 
+                                {...register("experience")} 
+                            />
                             {errors.experience && (
                                 <p className="text-sm text-red-500">{errors.experience.message}</p>
                             )}
                         </div>
 
+                        {/* Skills Input */}
                         <div>
                             <Label htmlFor="skills">Skills</Label>
-
-                            <input className="w-full border rounded-md p-2 focus:outline-none  " type="text" id="skills" placeholder="e.g., Python, Javascript, Project Management" {...register("skills")} />
-                            <p className="text-sm text-muted-foreground">Seperate multiple skills with commas</p>
-
-
+                            <input 
+                                className="w-full border rounded-md p-2 focus:outline-none" 
+                                type="text" id="skills" 
+                                placeholder="e.g., Python, JavaScript, Project Management" 
+                                {...register("skills")} 
+                            />
+                            <p className="text-sm text-muted-foreground">Separate multiple skills with commas</p>
                             {errors.skills && (
                                 <p className="text-sm text-red-500">{errors.skills.message}</p>
-                                
                             )}
                         </div>
+
+                        {/* Professional Bio */}
                         <div>
-                            <Label htmlFor="bio">Proffesional Bio</Label>
-
-                            <Textarea className="h-32" type="text" id="bio" placeholder="Tell us about your proffesional background" {...register("bio")} />
-                       
-
-
+                            <Label htmlFor="bio">Professional Bio</Label>
+                            <Textarea className="h-32" 
+                                type="text" id="bio" 
+                                placeholder="Tell us about your professional background" 
+                                {...register("bio")} 
+                            />
                             {errors.bio && (
                                 <p className="text-sm text-red-500">{errors.bio.message}</p>
-                                
                             )}
                         </div>
-
-
 
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            className="mt-4 w-full bg-blue-500 text-white p-2 rounded-md"
+                            className="mt-4 w-full bg-blue-500 text-white p-2 rounded-md flex items-center justify-center"
+                            disabled={updateloading}
                         >
-                            Submit
+                            {updateloading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Saving...
+                                </>
+                            ) : "Complete Profile"}
                         </button>
                     </form>
                 </CardContent>

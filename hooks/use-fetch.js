@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { toast } from "sonner";
 
 const useFetch = (cb)=>{
     const [data, setdata] = useState(undefined)
@@ -18,6 +19,9 @@ const useFetch = (cb)=>{
 
         }catch(error){
             seterror(error)
+            toast.error(error.message)
+        }finally{
+            setloading(false);
         }
 
     }

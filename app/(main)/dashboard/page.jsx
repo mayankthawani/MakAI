@@ -1,16 +1,19 @@
-import React from 'react'
-import { getUserOnboardingStatus } from '@/actions/user';
-import { redirect } from 'next/navigation';
 
-const IndustruInsightPage = async () => {
-    const {isonboarded} =   await getUserOnboardingStatus();
-     if(!isonboarded){
-        redirect("/onboarding")}
+import { getUserOnboardingStatus } from "@/actions/user";
+import { redirect } from "next/navigation";
+
+export default async function DashboardPage() {
+  const { isOnboarded } = await getUserOnboardingStatus();
+
+  // If not onboarded, redirect to onboarding page
+  // Skip this check if already on the onboarding page
+  if (!isOnboarded) {
+    redirect("/onboarding");
+  }
+
   return (
-    <div>
-      
+    <div className="container mx-auto">
+      hello
     </div>
-  )
+  );
 }
-
-export default IndustruInsightPage
