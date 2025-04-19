@@ -1,30 +1,31 @@
-import { useState } from "react"
-import { toast } from "sonner";
+"use client";
+import { useState } from "react";
 
-const useFetch = (cb)=>{
-    const [data, setdata] = useState(undefined)
-    const [loading, setloading] = useState(null)
-    const [error, seterror] = useState(null)
+export default function useFetch(fn) {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
-    const fn = async(...args)=>{
-        setloading(true);
-        seterror(null);
-
-        try{
-            const response = await cb(...args);
-            setdata(response);
-            seterror(null);
-
-            toast.error(error.message)
-
-        }catch(error){
-            seterror(error)
-            toast.error(error.message)
-        }finally{
-            setloading(false);
-        }
-
+  const execute = async (...args) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const result = await fn(...args);
+      setData(result);
+      return result;
+    } catch (error) {
+      setError(error);
+      throw error;
+    } finally {
+      setLoading(false);
     }
-    return{data,loading,error,fn,setdata}
-};
-export  default useFetch;
+  };
+
+  return {
+    loading,
+    error,
+    data,
+    setData,  // Add this line to expose setData
+    fn: execute,
+  };
+}
