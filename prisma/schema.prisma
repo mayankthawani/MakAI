@@ -40,14 +40,12 @@ model Assessment {
 }
 
 model Resume {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  content   String
-  atsScore  Float?
-  feedback  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  content     Json     // Changed from String to Json type
+  markdown    String   @db.Text
+  lastUpdated DateTime
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model CoverLetter {
