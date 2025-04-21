@@ -16,9 +16,16 @@ const Header = async  () => {
   return (
     <div>
       <header className="fixed top-0 left-0 w-full border-b bg-background/90 backdrop-blur-lg z-50 supports-[backdrop-filter]:bg-background/60">
-        <nav className='container mx-auto px-4 h-16 flex item-center justify-between'   >
-          <Link href ='/'>
-          <Image src="/logo.png" alt='MakAI logo' width={200} height={60} className='h-12 py-1 w-auto object-contain '></Image>
+        <nav className='container mx-auto px-4 h-20 flex items-center justify-between'>
+          <Link href='/' className='flex items-center'>
+            <Image 
+              src="/logo.png" 
+              alt='MakAI logo' 
+              width={250} 
+              height={80} 
+              className='h-16 w-auto object-contain hover:scale-105 transition-transform duration-200'
+              priority
+            />
           </Link>
           <div className='flex items-center gap-4'>
             <SignedIn>
